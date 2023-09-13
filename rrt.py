@@ -3,11 +3,12 @@ import math
 import random
 import time
 import imageio
-
-import matplotlib.pyplot
-import matplotlib.patches
 import numpy as np
 
+from threading import Lock
+from matplotlib.pyplot import Axes
+from matplotlib.patches import Circle
+from matplotlib.figure import Figure
 
 class Node:
     
@@ -24,31 +25,54 @@ class Node:
 
 class RRT:
     
-    def __init__(self, root: Node, inc_dist: int, domain: tuple[int, int], num_vert):
+    def __init__(
+        self, 
+        root: Node, 
+        inc_dist: int, 
+        domain: tuple[int, int], 
+        num_vert, 
+        end_pos: tuple[int, int]
+    ):
         self.root = root
         self.inc_dist = inc_dist
         self.domain = domain
         self.num_vert = num_vert
         self.obs: list[tuple[tuple[float, float], float]] = []
-        self.end = self.check_point((0, 0))
+        self.end = self.check_point(end_pos)
         self.end_node: Node = None
         
+        self.nu_background = imageio.imread("image/N_map.png")
         self.generate_obs()
         self.root.position = self.check_point(self.root.position)
         self.positions: list[tuple[float, float]] = [self.root.position]
-        print(self.root.position)
+        # print(self.root.position)
         
-        # imageio.imread("image/N_map.png")
+        print(f'size: {self.nu_background.shape}')
         
     def generate_obs(self):
-        self.obs.append(((51, 31), 20))
-        self.obs.append(((7.4, 38), 10.4))
-        self.obs.append(((4, 85), 4.5))
-        self.obs.append(((94, 22), 16))
-        self.obs.append(((19, 19.1), 7.7))
-        self.obs.append(((26, 2.4), 19))
-        self.obs.append(((26, 98), 8.44))
+        # self.obs.append(((51, 31), 20))
+        # self.obs.append(((7.4, 38), 10.4))
+        # self.obs.append(((4, 85), 4.5))
+        # self.obs.append(((94, 22), 16))
+        # self.obs.append(((19, 19.1), 7.7))
+        # self.obs.append(((26, 2.4), 19))
+        # self.obs.append(((26, 98), 8.44))
         # self.obs.append(((30, 40), 10))
+        
+        index_row = 0
+        for row in self.nu_background:
+            index_col = 0
+            for col in row:
+                r, g, b = col
+                # print(f"r: {r}, g: {g}, b: {b}")
+                if r == 0 and g == 0 and b == 0:
+                    self.obs.append(((100 - index_col, index_row), 0.5))
+                    
+                index_col += 1     
+            index_row += 1
+        # print(len(self.obs))
+        # print(len(self.nu_background))
+        # print(len(self.nu_background[0]))
             
     def check_point(self, pos: tuple[float, float]):
         x, y = pos
@@ -63,9 +87,9 @@ class RRT:
             
         return x, y
         
-    def generate_tree(self):
+    def generate_tree(self, fig: Figure, ax: Axes, do_ploting: bool):
         for i in range(self.num_vert):
-            if self.add_vert():
+            if self.add_vert(fig, ax, do_ploting):
                 return
             
         raise ValueError
@@ -100,9 +124,10 @@ class RRT:
         p2 = line_end
         p3 = point
         
-        return np.linalg.norm(np.cross(
-            self.tuple_sub(p2, p1), 
-            self.tuple_sub(p1, p3)
+        return np.linalg.norm(
+            np.cross(
+                self.tuple_sub(p2, p1), 
+                self.tuple_sub(p3, p1)
         )) / np.linalg.norm(
             self.tuple_sub(p2, p1)
         )
@@ -137,11 +162,12 @@ class RRT:
             
         return new_pos
         
-    def add_vert(self):
+    def add_vert(self, fig: Figure, ax: Axes, do_plotting: bool):
         while True:
             target_pos = self.gen_random_position()
             
             min_node, min_dist = self.find_min_dist_vert(self.root, target_pos)
+            # print(target_pos, min_node.position, min_dist)
             # if min_dist == 0:
                 # continue
             
@@ -157,14 +183,24 @@ class RRT:
             # print(target_pos, new_pos, min_node.position)
             if self.check_all_obs(min_node.position, new_pos):
                 break
+            else:
+                print("Collision")
         
-        print(new_pos, min_node.position, min_dist)
+        # print(new_pos, min_node.position, min_dist)
         new_node = Node(new_pos)
         
         new_node.parent = min_node
         min_node.children.append(new_node)
         
         self.positions.append(new_node.position)
+        
+        if do_plotting:
+            ax.cla()
+            self.plot_all(ax)
+            # self.plot_node(self.root, ax)
+            
+            fig.canvas.draw()
+            fig.canvas.flush_events()
         
         if self.check_all_obs(new_pos, self.end):
             end_node = Node(self.end)
@@ -195,20 +231,27 @@ class RRT:
                     
             return min_node, min_dist
         
-    def plot_all(self, ax: matplotlib.pyplot.Axes):
+    def plot_all(self, ax: Axes):
+        ax.set_xlim((0, 100))
+        ax.set_ylim((0, 100))
+        
+        ax.plot([self.end[0]], [self.end[1]], marker='o', color='green', markersize='5')
+        ax.plot([self.root.position[0]], [self.root.position[1]], marker='o', color='m', markersize='5')
+        
         self.plot_node(self.root, ax)
         
         for obst in self.obs:
             (pos_x, pos_y), rad = obst
             
-            cir = matplotlib.patches.Circle((pos_x, pos_y), rad, color='black')
+            cir = Circle((pos_x, pos_y), rad, color='black')
             ax.add_patch(cir)
             
-        ax.plot([self.end[0]], [self.end[1]], marker='o', color='green', markersize='3')
-        self.plot_path(self.end_node, ax)
+        
+        if self.end_node != None:
+            self.plot_path(self.end_node, ax)
             
     
-    def plot_node(self, node: Node, ax: matplotlib.pyplot.Axes):
+    def plot_node(self, node: Node, ax: Axes):
         if len(node.children) != 0:
             node_x, node_y = node.position
             
@@ -218,11 +261,11 @@ class RRT:
                 arr_x = [node_x, child_x]
                 arr_y = [node_y, child_y]
                 
-                ax.plot(arr_x, arr_y, marker='o', color='m', markersize=1.5)
+                ax.plot(arr_x, arr_y, marker='o', color='blue', markersize=1.5)
                 
                 self.plot_node(child, ax)
                 
-    def plot_path(self, node: Node, ax: matplotlib.pyplot.Axes):
+    def plot_path(self, node: Node, ax: Axes):
         if node != self.root:
             x, y = node.position
             parent_x, parent_y = node.parent.position
