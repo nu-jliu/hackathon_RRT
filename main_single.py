@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     tree = RRT(root, inc, domain, K_val, (60, 60), True)
     
-    print(len(tree.obs))
+    print(len(tree.obstacles))
     print(tree.root.position)
     
     # print(imageio.imread("./image/N_map.png"))
