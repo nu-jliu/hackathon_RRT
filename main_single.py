@@ -49,7 +49,7 @@ if __name__ == '__main__':
     K_val = int(sys.argv[1])
     # sys.setrecursionlimit(K_val ** 2)
 
-    tree = RRT(root, inc, domain, K_val, (60, 60))
+    tree = RRT(root, inc, domain, K_val, (60, 60), True)
     
     print(len(tree.obs))
     print(tree.root.position)
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # thread_plot.join()
     # plt.show()
     try:
-        # tree.generate_tree(ax=ax, fig=fig, do_ploting=True)
+        tree.generate_tree(ax=ax, fig=fig, do_ploting=True)
         pass
     except ValueError:
         print("No solution found")
@@ -87,8 +87,8 @@ if __name__ == '__main__':
         # print(root.get_distance((20, 30)))
         # print(list(map(lambda node: node.position, tree.root.children)), tree.positions)
         # fig, ax = plt.subplots()
-        fig.set_figheight(15)
-        fig.set_figwidth(15)
+        # fig.set_figheight(15)
+        # fig.set_figwidth(15)
         ax.set_title("Rapidly-Exporing Random Tree")
         # ax.plot([0,1], [2, 3])
         # ax.plot([1, 2], [4, 7])
