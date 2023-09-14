@@ -1,16 +1,16 @@
 import sys
 import math
-import random
 import time
+import random
 import imageio
-import numpy as np
 import util
+import numpy as np
+import matplotlib.pyplot as plt
 
 from threading import Lock
 from matplotlib.pyplot import Axes
 from matplotlib.patches import Circle
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 
 class Node:
     
@@ -20,10 +20,14 @@ class Node:
         self.position: tuple[float, float] = position
         
     def get_distance(self, new_pos: tuple[float, float]):
-        # x_dist = abs(self.position[0] - new_pos[0])
-        # y_dist = abs(self.position[1] - new_pos[1])
-        
-        # return math.sqrt(x_dist ** 2 + y_dist ** 2)
+        """Get the distance between the current node and a position
+
+        Args:
+            new_pos (tuple[float, float]): coordinate of the position
+
+        Returns:
+            float: distance
+        """
         
         return util.dist_two_points(self.position, new_pos)
 
@@ -50,9 +54,6 @@ class RRT:
         self.__generate_obs()
         self.root.position = self.__get_point_no_collision(self.root.position)
         self.positions: list[tuple[float, float]] = [self.root.position]
-        # print(self.root.position)
-        
-        # print(f'size: {self.nu_background.shape}')
         
     def __generate_obs(self):
         '''
@@ -223,43 +224,7 @@ class RRT:
             if self.__add_vert(fig, ax, do_ploting):
                 return
             
-        raise ValueError
-    
-    # def get_dist_between_two_points(self, p1: tuple[float, float], p2: tuple[float, float]):
-    #     p1_x, p1_y = p1
-    #     p2_x, p2_y = p2
-        
-    #     return math.sqrt((p2_x - p1_x) ** 2 + (p2_y - p1_y) ** 2)
-        
-    
-    
-    # def get_line_point_dist(
-    #     self, 
-    #     line_start: tuple[float, float], 
-    #     line_end: tuple[float, float], 
-    #     point: tuple[float, float]
-    # ):
-    #     p1 = line_start
-    #     p2 = line_end
-    #     p3 = point
-        
-    #     return np.linalg.norm(
-    #         np.cross(
-    #             util.tuple_sub(p2, p1), 
-    #             util.tuple_sub(p3, p1)
-    #     )) / np.linalg.norm(
-    #         util.tuple_sub(p2, p1)
-    #     )
-        
-    # def tuple_sub(self, t1, t2):
-    #     return tuple(map(
-    #         lambda i, j:
-    #             i - j,
-    #         t1,
-    #         t2
-    #     ))
-            
-    
+        raise ValueError  
     
     def __gen_random_position(self):
         """Generate a random position
@@ -295,10 +260,6 @@ class RRT:
             target_pos = self.__gen_random_position()
             
             min_node, min_dist = self.__find_nearest_neighbor_node_dist(self.root, target_pos)
-            # print(target_pos, min_node.position, min_dist)
-            # if min_dist == 0:
-                # continue
-            
             
             node_x, node_y = min_node.position
             target_x, target_y = target_pos
@@ -416,7 +377,7 @@ class RRT:
                 arr_x = [node_x, child_x]
                 arr_y = [node_y, child_y]
                 
-                ax.plot(arr_x, arr_y, marker='o', color='blue', markersize=1.8)
+                ax.plot(arr_x, arr_y, marker='o', color='royalblue', markersize=1.8)
                 
                 self.__plot_node(child, ax)
                 
@@ -435,8 +396,6 @@ class RRT:
             x_arr = [x, parent_x]
             y_arr = [y, parent_y]
             
-            ax.plot(x_arr, y_arr, color='red', marker='o', markersize=1.8)
+            ax.plot(x_arr, y_arr, color='firebrick', marker='o', markersize=1.8)
             
             self.__plot_path(node.parent, ax)
-    
-    
