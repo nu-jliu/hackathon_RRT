@@ -21,6 +21,7 @@ class Node:
         
     def get_distance(self, new_pos: tuple[float, float]):
 <<<<<<< HEAD
+<<<<<<< HEAD
         """get the distance between the current node and nother location
 
         Args:
@@ -29,6 +30,8 @@ class Node:
         Returns:
             float: the distance between the two points
 =======
+=======
+>>>>>>> main
         """Get the distance between the current node and a position
 
         Args:
@@ -36,7 +39,10 @@ class Node:
 
         Returns:
             float: distance
+<<<<<<< HEAD
 >>>>>>> 2d5bbf2 (update all file)
+=======
+>>>>>>> main
         """
         
         return util.dist_two_points(self.position, new_pos)
@@ -235,10 +241,14 @@ class RRT:
                 return
             
 <<<<<<< HEAD
+<<<<<<< HEAD
         raise ValueError
 =======
         raise ValueError  
 >>>>>>> 2d5bbf2 (update all file)
+=======
+        raise ValueError  
+>>>>>>> main
     
     def __gen_random_position(self):
         """Generate a random position
