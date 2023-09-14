@@ -64,17 +64,6 @@ if __name__ == '__main__':
     plt.xlim(0, 100)
     plt.ylim(0, 100)
     
-    # thread_plot = threading.Thread(target=plot_tree, args=(fig, ax))
-    # thread_solve = threading.Thread(target=try_solve, args=())
-    # thread_plot.daemon = True
-    
-    # thread_solve.start()
-    
-    # plot_tree(fig, ax)
-    # thread_solve.join()
-    # thread_plot.start()
-    # thread_plot.join()
-    # plt.show()
     try:
         tree.generate_tree(ax=ax, fig=fig, do_ploting=True)
         pass
@@ -84,17 +73,11 @@ if __name__ == '__main__':
     else:
         plt.ioff()
         print(len(tree.positions))
-        # print(root.get_distance((20, 30)))
-        # print(list(map(lambda node: node.position, tree.root.children)), tree.positions)
-        # fig, ax = plt.subplots()
-        # fig.set_figheight(15)
-        # fig.set_figwidth(15)
+
         ax.set_title("Rapidly-Exporing Random Tree")
-        # ax.plot([0,1], [2, 3])
-        # ax.plot([1, 2], [4, 7])
+
         ax.cla()
         tree.plot_all(ax)
-        # ax.axis('equal')
         plt.xlim(0, 100)
         plt.ylim(0, 100)
         plt.show()
