@@ -43,15 +43,15 @@ if __name__ == '__main__':
         sys.exit(1)
         
     
-    root: Node = Node((50.0, 50.0))
+    root: Node = Node((40.0, 40.0))
     inc = 1
     domain = (100, 100)
     K_val = int(sys.argv[1])
     # sys.setrecursionlimit(K_val ** 2)
 
-    tree = RRT(root, inc, domain, K_val)
+    tree = RRT(root, inc, domain, K_val, (60, 60), True)
     
-    print(tree.obs)
+    print(tree.obstacles)
     print(tree.root.position)
     
     
