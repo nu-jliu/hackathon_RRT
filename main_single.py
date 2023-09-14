@@ -13,28 +13,6 @@ from rrt import Node
 LOCK = threading.Lock()
 
 tree: RRT = None
-
-def try_solve():
-    
-    # LOCK.acquire()
-    global tree
-    tree.generate_tree()
-    # LOCK.release()
-    
-def plot_tree(fig: Figure, ax: Axes):
-    
-    while True:
-        # LOCK.acquire()
-        global tree
-        if tree != None:
-            ax.cla()
-            
-            tree.plot_all(ax)
-            
-            fig.canvas.draw()
-            fig.canvas.flush_events()
-            # time.sleep(0.1)
-        # LOCK.release()
         
 
 if __name__ == '__main__':
@@ -49,20 +27,16 @@ if __name__ == '__main__':
     K_val = int(sys.argv[1])
     # sys.setrecursionlimit(K_val ** 2)
 
-    tree = RRT(root, inc, domain, K_val, (60, 60), True)
+    tree = RRT(root, inc, domain, K_val, end_pos=(60, 60), do_image=True)
     
     print(len(tree.obstacles))
     print(tree.root.position)
-    
-    # print(imageio.imread("./image/N_map.png"))
-    # tree.add_vert()
-    # tree.add_vert()
     plt.ion()
     fig, ax = plt.subplots()
     fig.set_figheight(15)
     fig.set_figwidth(15)
-    plt.xlim(0, 100)
-    plt.ylim(0, 100)
+    ax.set_xlim(xmin=0, xmax=100)
+    ax.set_ylim(ymin=0, ymax=100)
     
     try:
         tree.generate_tree(ax=ax, fig=fig, do_ploting=True)
@@ -73,9 +47,7 @@ if __name__ == '__main__':
     else:
         plt.ioff()
         print(len(tree.positions))
-
         ax.set_title("Rapidly-Exporing Random Tree")
-
         ax.cla()
         tree.plot_all(ax)
         plt.xlim(0, 100)

@@ -15,9 +15,9 @@ LOCK = threading.Lock()
 tree: RRT = None
 
 def try_solve(ax: Axes, fig: Figure):
+    
     global tree
     tree.generate_tree(ax, fig, do_ploting=False)
-    print(len(tree.positions))
     
 def plot_tree(fig: Figure, ax: Axes):
     
@@ -48,7 +48,6 @@ if __name__ == '__main__':
     
     print(tree.obstacles)
     print(tree.root.position)
-
     plt.ion()
     fig, ax = plt.subplots()
     fig.set_figheight(15)
@@ -56,9 +55,7 @@ if __name__ == '__main__':
     plt.xlim(0, 100)
     plt.ylim(0, 100)
     
-    # thread_plot = threading.Thread(target=plot_tree, args=(fig, ax))
     thread_solve = threading.Thread(target=try_solve, args=(ax, fig))
-    # thread_plot.daemon = True
     
     thread_solve.start()
     

@@ -1,16 +1,16 @@
 import sys
 import math
-import random
 import time
+import random
 import imageio
-import numpy as np
 import util
+import numpy as np
+import matplotlib.pyplot as plt
 
 from threading import Lock
 from matplotlib.pyplot import Axes
 from matplotlib.patches import Circle
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 
 class Node:
     
@@ -20,6 +20,7 @@ class Node:
         self.position: tuple[float, float] = position
         
     def get_distance(self, new_pos: tuple[float, float]):
+<<<<<<< HEAD
         """get the distance between the current node and nother location
 
         Args:
@@ -27,6 +28,15 @@ class Node:
 
         Returns:
             float: the distance between the two points
+=======
+        """Get the distance between the current node and a position
+
+        Args:
+            new_pos (tuple[float, float]): coordinate of the position
+
+        Returns:
+            float: distance
+>>>>>>> 2d5bbf2 (update all file)
         """
         
         return util.dist_two_points(self.position, new_pos)
@@ -224,7 +234,11 @@ class RRT:
             if self.__add_vert(fig, ax, do_ploting):
                 return
             
+<<<<<<< HEAD
         raise ValueError
+=======
+        raise ValueError  
+>>>>>>> 2d5bbf2 (update all file)
     
     def __gen_random_position(self):
         """Generate a random position
@@ -375,7 +389,7 @@ class RRT:
                 arr_x = [node_x, child_x]
                 arr_y = [node_y, child_y]
                 
-                ax.plot(arr_x, arr_y, marker='o', color='blue', markersize=1.8)
+                ax.plot(arr_x, arr_y, marker='o', color='royalblue', markersize=1.8)
                 
                 self.__plot_node(child, ax)
                 
@@ -394,8 +408,6 @@ class RRT:
             x_arr = [x, parent_x]
             y_arr = [y, parent_y]
             
-            ax.plot(x_arr, y_arr, color='red', marker='o', markersize=1.8)
+            ax.plot(x_arr, y_arr, color='firebrick', marker='o', markersize=1.8)
             
             self.__plot_path(node.parent, ax)
-    
-    
